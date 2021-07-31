@@ -1,0 +1,19 @@
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "rhyton"
+version = "1.0.0"
+description = "Like Flask, but for Spartan."
+repository = "https://github.com/MineRobber9000/rhyton"
+readme = "README.md"
+license = "MIT"
+authors = ['Robert "khuxkm" Miles <khuxkm+jayhawk@tilde.team>']
+classifiers = [
+	"Development Status :: 5 - Production/Stable"
+]
+
+[tool.poetry.dependencies]
+jayhawk = "*"
+werkzeug = "*"
