@@ -48,7 +48,7 @@ class Rhyton:
 		map_adapter = self.map.bind(self.config["host"])
 		adapter = type("_RhytonAdapter",(RhytonAdapter,),{"map_adapter":map_adapter,"rhyton":self})
 		adapter.context = Context(adapter)
-		return adapter, context
+		return adapter
 
 class Context:
 	def __init__(self,adapter):
