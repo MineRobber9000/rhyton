@@ -1,5 +1,6 @@
 from jayhawk.dispatch import SpartanRequestDispatcher
 from werkzeug.routing import Rule, Map, NotFound
+from sys import modules as SYS_MODULES
 
 class Rhyton:
 	"""
@@ -10,7 +11,9 @@ class Rhyton:
 	>>> app = Rhyton("example.com")
 	"""
 	# Default configuration values
-	DEFAULT_CONFIG = {}
+	DEFAULT_CONFIG = {
+		"template_engine": "rhyton.templating.Jinja2TemplateEngine"
+	}
 	# Rule class
 	RULE_CLASS = Rule
 	# Map class
@@ -21,6 +24,7 @@ class Rhyton:
 		self.config = self.make_config(config)
 		self.map = self.MAP_CLASS()
 		self.view_functions = {}
+		self.__init_template_engine()
 	def make_config(self,config):
 		ret = dict()
 		# first apply defaults
@@ -28,6 +32,11 @@ class Rhyton:
 		# then apply changes
 		ret.update(config)
 		return ret
+	def __init_template_engine(self):
+		global SYS_MODULES
+		package, cls = self.config["template_engine"].rsplit(".",1)
+		__import__(package)
+		self.template_engine = getattr(SYS_MODULES[package],cls)(self)
 	def route(self,rule,endpoint=None,**options):
 		def __wrapper(func):
 			self.add_rule(rule,func,endpoint,**options)
@@ -72,6 +81,11 @@ class BoundContext(Context):
 	@property
 	def has_data(self):
 		return bool(self.data)
+	def render_template(self,template,**context):
+		# inject BoundContext into the context
+		context["ctx"] = self
+		# now shell out to the template engine
+		self.rhyton.template_engine.render_template(template,**context)
 	def register_teardown(self,func):
 		self._teardown_funcs.append(func)
 	def teardown(self):
