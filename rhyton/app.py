@@ -1,6 +1,5 @@
 from jayhawk.dispatch import SpartanRequestDispatcher
 from werkzeug.routing import Rule, Map, NotFound
-from werkzeug.local import LocalStack, LocalProxy
 
 class Rhyton:
 	"""
